@@ -1,0 +1,41 @@
+﻿<Page x:Class="PassengerTransportationApp.BusesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PassengerTransportationApp"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="BusesPage" Background="AliceBlue" Loaded="Page_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition MaxHeight="20"/>
+            <RowDefinition MaxHeight="35"/>
+            <RowDefinition MaxHeight="20"/>
+            <RowDefinition MaxHeight="35"/>
+            <RowDefinition MaxHeight="20"/>
+        </Grid.RowDefinitions>
+        <DataGrid Name="BusesGrid" Grid.Row="0" ColumnWidth="*" FontSize="16" SelectionMode="Single"
+                  AutoGenerateColumns="False" AlternatingRowBackground="LightBlue" IsReadOnly="True"
+                  CanUserResizeColumns="False" CanUserSortColumns="True" CanUserReorderColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding id}" Header="id" Visibility="Hidden"/>
+                <DataGridTextColumn Binding="{Binding bus_number}" Header="Номер автобуса" MaxWidth="200"/>
+                <DataGridTextColumn Binding="{Binding model}" Header="Модель"/>
+                <DataGridTextColumn Binding="{Binding seats_number}" Header="Количество мест" MaxWidth="200"/>
+                <DataGridTextColumn Binding="{Binding reg_number}" Header="Регистрационный номер"/>
+                <DataGridCheckBoxColumn Binding="{Binding is_in_exploitation}" Header="В эксплуатации" MaxWidth="200"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Name="ErrorLabel" Grid.Row="2" FontSize="16" HorizontalContentAlignment="Center" Foreground="Red" Margin="100,0,100,0"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="AddBus" Content="Новый автобус" FontSize="16" MinWidth="140" Click="AddBus_Click"/>
+            <Rectangle MinWidth="80"/>
+            <Button Name="ExploitateBus" Content="Ввести/вывести из эксплуатации" FontSize="16" MinWidth="260" Click="ExploitateBus_Click"/>
+            <Rectangle MinWidth="80"/>
+            <Button Name="DeleteBus" Content="Удалить" FontSize="16" MinWidth="140" Click="DeleteBus_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>

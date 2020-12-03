@@ -1,0 +1,75 @@
+﻿<Window x:Class="PassengerTransportationApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PassengerTransportationApp"
+        mc:Ignorable="d"
+        Title="Приложение" MinHeight="500" Height="600" MinWidth="900" Width="1000" Background="AliceBlue" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="20" MaxHeight="35"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel x:Name="AdminMenu" LastChildFill="False" Dock="Top" Grid.Row="0" Background="LightBlue" Visibility="Hidden">
+            <Label Name="BusModelsLablel" Style="{DynamicResource HeaderStyle}" MinWidth="170" BorderThickness="0" Cursor="Hand"
+                   MouseEnter="BusModels_MouseEnter" MouseLeave="BusModels_MouseLeave" MouseLeftButtonDown="BusModels_MouseDown">
+                Модели автобусов
+            </Label>
+            <Label Name="BusesLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" Cursor="Hand"
+                   MouseEnter="Buses_MouseEnter" MouseLeave="Buses_MouseLeave" MouseLeftButtonDown="Buses_MouseDown">
+                Автобусы
+            </Label>
+            <Label Name="DriversLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" Cursor="Hand"
+                   MouseEnter="Drivers_MouseEnter" MouseLeave="Drivers_MouseLeave" MouseLeftButtonDown="Drivers_MouseDown">
+                Водители
+            </Label>
+            <Label Name="PassengersLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" Cursor="Hand"
+                   MouseEnter="Passengers_MouseEnter" MouseLeave="Passengers_MouseLeave" MouseLeftButtonDown="Passengers_MouseDown">
+                Пассажиры
+            </Label>
+            <Label Name="RoutesLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" Cursor="Hand"
+                   MouseEnter="Routes_MouseEnter" MouseLeave="Routes_MouseLeave" MouseLeftButtonDown="Routes_MouseDown">
+                Рейсы
+            </Label>
+            <Label Name="TicketsLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" BorderThickness="1,0,1,0" Cursor="Hand"
+                   MouseEnter="Tickets_MouseEnter" MouseLeave="Tickets_MouseLeave" MouseLeftButtonDown="Tickets_MouseDown">
+                Билеты
+            </Label>
+            <Label Name="LogOutLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" DockPanel.Dock="Right" Cursor="Hand"
+                   MouseEnter="LogOut_MouseEnter" MouseLeave="LogOut_MouseLeave" MouseLeftButtonDown="LogOut_MouseDown">
+                Выйти
+            </Label>
+        </DockPanel>
+        <DockPanel x:Name="UserMenu" LastChildFill="False" Dock="Top" Grid.Row="0" Background="LightBlue" Visibility="Hidden">
+            <Label Name="UserRoutesLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" Cursor="Hand" BorderThickness="0"
+                   MouseEnter="UserRoutes_MouseEnter" MouseLeave="UserRoutes_MouseLeave">
+                Поиск рейсов
+            </Label>
+            <Label Name="UserTicketsLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" BorderThickness="1,0,1,0" Cursor="Hand"
+                   MouseEnter="UserTickets_MouseEnter" MouseLeave="UserTickets_MouseLeave">
+                Мои билеты
+            </Label>
+            <Label Name="UserLogOutLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" DockPanel.Dock="Right" Cursor="Hand"
+                   MouseEnter="UserLogOut_MouseEnter" MouseLeave="UserLogOut_MouseLeave" MouseLeftButtonDown="LogOut_MouseDown">
+                Выйти
+            </Label>
+        </DockPanel>
+        <Frame x:Name="ContentFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
+    </Grid>
+
+    <Window.Resources>
+        <Style x:Key="HeaderStyle">
+            <Setter Property="Control.FontSize" Value="16"/>
+            <Setter Property="Control.VerticalAlignment" Value="Center"/>
+            <Setter Property="Control.HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Control.BorderBrush" Value="Black"/>
+            <Setter Property="Control.BorderThickness" Value="1,0,0,0"/>
+            <Setter Property="Control.Margin" Value="0"/>
+        </Style>
+    </Window.Resources>
+</Window>

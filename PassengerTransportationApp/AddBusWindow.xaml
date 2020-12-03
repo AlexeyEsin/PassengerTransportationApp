@@ -1,0 +1,38 @@
+﻿<Window x:Class="PassengerTransportationApp.AddBusWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PassengerTransportationApp"
+        mc:Ignorable="d"
+        Title="Новый автобус" Height="300" Width="500" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+        <Label Name="ModelLabel" Content="Модель:" Grid.Row="1" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="NumberLabel" Content="Номер автобуса:" Grid.Row="3" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="RegNumberLabel" Content="Регистрационный номер:" Grid.Row="5" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="ErrorLabel" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" FontSize="16" Foreground="Red" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <ComboBox Name="ModelComboBox" Grid.Row="1" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="NumberTextBox" Grid.Row="3" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="RegNumberTextBox" Grid.Row="5" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Button Name="AddBtn" MaxWidth="160" Content="Добавить" Grid.Row="9" Grid.ColumnSpan="4" Click="AddBtn_Click" FontSize="16"/>
+    </Grid>
+</Window>

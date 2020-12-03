@@ -1,0 +1,62 @@
+﻿<Window x:Class="PassengerTransportationApp.UpdateRouteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PassengerTransportationApp"
+        mc:Ignorable="d"
+        Title="UpdateRouteWindow" Height="500" Width="490" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+        <Label Name="DeparturePointLabel" Content="Пункт отправления:" Grid.Row="1" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="ArrivalPointLabel" Content="Пункт прибытия:" Grid.Row="3" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="DepartureDateLabel" Content="Дата отправления:" Grid.Row="5" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="DepartureTimeLabel" Content="Время отправления:" Grid.Row="7" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="ArrivalDateLabel" Content="Дата прибытия:" Grid.Row="9" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="ArrivalTimeLabel" Content="Время прибытия:" Grid.Row="11" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="PriceLabel" Content="Стоимость билета:" Grid.Row="13" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="DriverLabel" Content="Водитель:" Grid.Row="15" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="BusLabel" Content="Автобус:" Grid.Row="17" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="ErrorLabel" Grid.Row="19" Grid.Column="1" Grid.ColumnSpan="2" FontSize="16" Foreground="Red" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <TextBox Name="DeparturePointTextBox" Grid.Row="1" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="ArrivalPointTextBox" Grid.Row="3" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <DatePicker Name="DepartureDatePicker" Grid.Row="5" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="DepartureTimeTextBox" Grid.Row="7" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <DatePicker Name="ArrivalDatePicker" Grid.Row="9" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="ArrivalTimeTextBox" Grid.Row="11" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="PriceTextBox" Grid.Row="13" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center" PreviewTextInput="Price_PreviewTextInput"/>
+        <ComboBox Name="DriverComboBox" Grid.Row="15" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <ComboBox Name="BusComboBox" Grid.Row="17" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Button Name="SaveButton" MaxWidth="100" Content="Сохранить" Grid.Row="21" Grid.ColumnSpan="4" Click="SaveButton_Click" FontSize="16"/>
+    </Grid>
+</Window>
