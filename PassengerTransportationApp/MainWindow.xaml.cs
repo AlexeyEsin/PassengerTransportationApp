@@ -164,7 +164,9 @@ namespace PassengerTransportationApp
 
         private void UserTickets_MouseDown(object sender, MouseEventArgs e)
         {
-            //ContentFrame.Navigate(new TicketsPage(connectionString));
+            var userTicketsPage = new UserTicketsPage();
+            userTicketsPage.connectionString = connectionString;
+            ContentFrame.Navigate(userTicketsPage);
         }
 
         private void LogOut_MouseEnter(object sender, MouseEventArgs e)

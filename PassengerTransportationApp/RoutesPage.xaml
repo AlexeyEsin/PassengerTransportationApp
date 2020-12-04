@@ -34,7 +34,7 @@
         </DataGrid>
         <Label Name="ErrorLabel" Grid.Row="2" FontSize="16" HorizontalContentAlignment="Center" Foreground="Red" Margin="200,0,200,0"/>
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Name="AddRoute" Content="Добавить" FontSize="16" MinWidth="100" Click="AddRoute_Click"/>
+            <Button Name="AddRoute" Content="Новый рейс" FontSize="16" MinWidth="120" Click="AddRoute_Click"/>
             <Rectangle MinWidth="100"/>
             <Button Name="UpdateRoute" Content="Редактировать" FontSize="16" MinWidth="130" Click="UpdateRoute_Click"/>
             <Rectangle MinWidth="100"/>

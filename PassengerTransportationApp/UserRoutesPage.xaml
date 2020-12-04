@@ -5,11 +5,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:PassengerTransportationApp"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="1000"
       Title="UserRoutesPage" Background="AliceBlue" Loaded="Page_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition MaxHeight="20"/>
+            <RowDefinition MaxHeight="35"/>
+            <RowDefinition MaxHeight="20"/>
             <RowDefinition/>
             <RowDefinition MaxHeight="20"/>
             <RowDefinition MaxHeight="35"/>
@@ -17,7 +20,16 @@
             <RowDefinition MaxHeight="35"/>
             <RowDefinition MaxHeight="20"/>
         </Grid.RowDefinitions>
-        <DataGrid Name="RoutesGrid" Grid.Row="0" ColumnWidth="*" FontSize="16" SelectionMode="Single"
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="50,0,50,0">
+            <ComboBox Name="DeparturePointComboBox" IsEditable="True" MinWidth="200" FontSize="16" VerticalContentAlignment="Center"/>
+            <Rectangle Width="50"/>
+            <ComboBox Name="ArrivalPointComboBox" IsEditable="True" MinWidth="200" FontSize="16" VerticalContentAlignment="Center"/>
+            <Rectangle Width="50"/>
+            <DatePicker Name="DepartureDatePicker" Width="180" FontSize="16" VerticalContentAlignment="Center"/>
+            <Rectangle MinWidth="50"/>
+            <Button Name="FindRoutes" Content="Найти" FontSize="16" Width="80" HorizontalAlignment="Right" Click="FindRoutes_Click"/>
+        </StackPanel>
+        <DataGrid Name="RoutesGrid" Grid.Row="3" ColumnWidth="*" FontSize="16" SelectionMode="Single"
                   AutoGenerateColumns="False" AlternatingRowBackground="LightBlue" IsReadOnly="True"
                   CanUserResizeColumns="False" CanUserSortColumns="True" CanUserReorderColumns="False">
             <DataGrid.Columns>
@@ -29,14 +41,12 @@
                 <DataGridTextColumn Binding="{Binding price, StringFormat={}{0} руб.}" Header="Стоимость"/>
                 <DataGridTextColumn Binding="{Binding free_places}" Header="Места" MaxWidth="70"/>
                 <DataGridTextColumn Binding="{Binding driver}" Header="Водитель" MaxWidth="150"/>
-                <DataGridTextColumn Binding="{Binding bus}" Header="Автобус"/>
+                <DataGridTextColumn Binding="{Binding bus_number}" Header="Автобус"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Label Name="ErrorLabel" Grid.Row="2" FontSize="16" HorizontalContentAlignment="Center" Foreground="Red" Margin="200,0,200,0"/>
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Name="AddRoute" Content="Добавить рейс" FontSize="16" MinWidth="160"/>
-            <Rectangle MinWidth="100"/>
-            <Button Name="DeleteRoute" Content="Удалить рейс" FontSize="16" MinWidth="160"/>
+        <Label Name="ErrorLabel" Grid.Row="5" FontSize="16" HorizontalContentAlignment="Center" Foreground="Red" Margin="200,0,200,0"/>
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="BuyTicket" Content="Купить билет" FontSize="16" MinWidth="160" Click="BuyTicket_Click"/>
         </StackPanel>
     </Grid>
 </Page>

@@ -57,35 +57,37 @@ namespace PassengerTransportationApp
             string regNumber = RegNumberTextBox.Text.ToUpper();
             int busNumber;
 
-            var regNumberPattern = @"^[АВЕКМНОРСТУХ]\d{3}(?<!000)[АВЕКМНОРСТУХ]{2}\d{2,3}$";
+            try
+            {
+                var connection = new SqlConnection(connectionString);
+                var checkRegNumberExpression = $"SELECT dbo.CheckRegNumber(N'{regNumber}')";
+                var checkRegNumberCommand = new SqlCommand(checkRegNumberExpression, connection);
 
-            if (busNumberStr == "" || regNumber == "" || ModelComboBox.SelectedIndex < 0)
-            {
-                ErrorLabel.Content = "Введите все данные";
-            }
-            else if (!int.TryParse(busNumberStr, out busNumber) || busNumber <= 0)
-            {
-                ErrorLabel.Content = "Неверный формат номера автобуса";
-            }
-            else if (!Regex.IsMatch(regNumber, regNumberPattern))
-            {
-                ErrorLabel.Content = "Неверный формат регистрационного номера";
-            }
-            else
-            {
-                modelId = (int)ModelComboBox.SelectedValue;
+                connection.Open();
+                bool isCorrectRegNumber = (bool)checkRegNumberCommand.ExecuteScalar();
 
-                try
+                if (busNumberStr == "" || regNumber == "" || ModelComboBox.SelectedIndex < 0)
                 {
+                    ErrorLabel.Content = "Введите все данные";
+                }
+                else if (!int.TryParse(busNumberStr, out busNumber) || busNumber <= 0)
+                {
+                    ErrorLabel.Content = "Неверный формат номера автобуса";
+                }
+                else if (!isCorrectRegNumber)
+                {
+                    ErrorLabel.Content = "Неверный формат регистрационного номера";
+                }
+                else
+                {
+                    modelId = (int)ModelComboBox.SelectedValue;
+
                     var expression = "AddBus";
-                    var connection = new SqlConnection(connectionString);
                     var command = new SqlCommand(expression, connection);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@model_id", modelId));
                     command.Parameters.Add(new SqlParameter("@bus_number", busNumber));
                     command.Parameters.Add(new SqlParameter("@reg_number", regNumber));
-
-                    connection.Open();
 
                     try
                     {
@@ -101,10 +103,10 @@ namespace PassengerTransportationApp
                     connection.Close();
                     this.Close();
                 }
-                catch
-                {
-                    ErrorLabel.Content = "Произошла ошибка соединения";
-                }
+            }
+            catch
+            {
+                ErrorLabel.Content = "Произошла ошибка соединения";
             }
         }
     }

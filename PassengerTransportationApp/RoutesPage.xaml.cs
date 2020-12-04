@@ -87,14 +87,11 @@ namespace PassengerTransportationApp
 
                     command.Dispose();
                     connection.Close();
+                    RefreshGrid();
                 }
                 catch
                 {
                     ErrorLabel.Content = "Произошла ошибка соединения";
-                }
-                finally
-                {
-                    RefreshGrid();
                 }
             }
             else

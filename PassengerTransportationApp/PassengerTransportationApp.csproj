@@ -70,6 +70,9 @@
     <Compile Include="BusModelsPage.xaml.cs">
       <DependentUpon>BusModelsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BuyTicketWindow.xaml.cs">
+      <DependentUpon>BuyTicketWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UpdateBusModelWindow.xaml.cs">
       <DependentUpon>UpdateBusModelWindow.xaml</DependentUpon>
     </Compile>
@@ -97,6 +100,9 @@
     <Compile Include="UserRoutesPage.xaml.cs">
       <DependentUpon>UserRoutesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserTicketsPage.xaml.cs">
+      <DependentUpon>UserTicketsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WelcomeAdminPage.xaml.cs">
       <DependentUpon>WelcomeAdminPage.xaml</DependentUpon>
     </Compile>
@@ -121,6 +127,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BusModelsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BuyTicketWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -164,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserRoutesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserTicketsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

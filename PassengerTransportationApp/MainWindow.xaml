@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PassengerTransportationApp"
         mc:Ignorable="d"
-        Title="Приложение" MinHeight="500" Height="600" MinWidth="900" Width="1000" Background="AliceBlue" Loaded="Window_Loaded">
+        Title="Приложение" MinHeight="500" Height="600" MinWidth="1000" Width="1000" Background="AliceBlue" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="20" MaxHeight="35"/>
@@ -47,11 +47,11 @@
         </DockPanel>
         <DockPanel x:Name="UserMenu" LastChildFill="False" Dock="Top" Grid.Row="0" Background="LightBlue" Visibility="Hidden">
             <Label Name="UserRoutesLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" Cursor="Hand" BorderThickness="0"
-                   MouseEnter="UserRoutes_MouseEnter" MouseLeave="UserRoutes_MouseLeave">
+                   MouseEnter="UserRoutes_MouseEnter" MouseLeave="UserRoutes_MouseLeave" MouseLeftButtonDown="UserRoutes_MouseDown">
                 Поиск рейсов
             </Label>
             <Label Name="UserTicketsLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" BorderThickness="1,0,1,0" Cursor="Hand"
-                   MouseEnter="UserTickets_MouseEnter" MouseLeave="UserTickets_MouseLeave">
+                   MouseEnter="UserTickets_MouseEnter" MouseLeave="UserTickets_MouseLeave" MouseLeftButtonDown="UserTickets_MouseDown">
                 Мои билеты
             </Label>
             <Label Name="UserLogOutLablel" Style="{DynamicResource HeaderStyle}" MinWidth="120" DockPanel.Dock="Right" Cursor="Hand"
@@ -59,7 +59,7 @@
                 Выйти
             </Label>
         </DockPanel>
-        <Frame x:Name="ContentFrame" Grid.Row="1" NavigationUIVisibility="Hidden"/>
+        <Frame x:Name="ContentFrame" Grid.Row="1" NavigationUIVisibility="Hidden" IsTabStop="False"/>
     </Grid>
 
     <Window.Resources>
