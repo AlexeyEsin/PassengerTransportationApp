@@ -82,7 +82,7 @@ namespace PassengerTransportationApp
                 }
                 else
                 {
-                    expression = "UnploitateBus";
+                    expression = "UnexploitateBus";
                 }
 
                 try
