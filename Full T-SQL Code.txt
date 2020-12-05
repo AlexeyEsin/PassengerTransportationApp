@@ -1,0 +1,450 @@
+CREATE DATABASE PassengerTransportationDB;
+GO
+
+/* Database and tables creation */
+
+USE PassengerTransportationDB;
+GO
+CREATE TABLE BusModels (
+	id int IDENTITY(1, 1) PRIMARY KEY,
+	name nvarchar(100) NOT NULL UNIQUE,
+	seats_number int NOT NULL CHECK (seats_number > 0)
+);
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TABLE Buses (
+	id int IDENTITY(1, 1) PRIMARY KEY,
+	model_id int NOT NULL FOREIGN KEY REFERENCES BusModels (id)
+		ON DELETE NO ACTION ON UPDATE CASCADE,
+	reg_number nvarchar(9) NOT NULL UNIQUE,
+	bus_number int NOT NULL UNIQUE,
+	is_in_exploitation bit NOT NULL DEFAULT 0
+);
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TABLE Drivers (
+	id int IDENTITY(1, 1) PRIMARY KEY,
+	first_name nvarchar(50) NOT NULL,
+	middle_name nvarchar(50),
+	last_name nvarchar(50) NOT NULL,
+	is_hired bit NOT NULL DEFAULT 1
+);
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TABLE Passengers (
+	id int IDENTITY(1, 1) PRIMARY KEY,
+	first_name nvarchar(50) NOT NULL,
+	middle_name nvarchar(50),
+	last_name nvarchar(50) NOT NULL,
+	birth_date date NOT NULL,
+	passport_number bigint NOT NULL,
+	user_id int NOT NULL DEFAULT USER_ID(),
+	CONSTRAINT UQ_passenger UNIQUE (passport_number, user_id)
+);
+GO
+CREATE NONCLUSTERED INDEX IX_passenger_name
+	ON Passengers (last_name, first_name, middle_name);
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TABLE Routes (
+	id int IDENTITY(1, 1) PRIMARY KEY,
+	bus_id int NOT NULL FOREIGN KEY REFERENCES Buses (id)
+		ON DELETE NO ACTION ON UPDATE NO ACTION,
+	driver_id int NOT NULL FOREIGN KEY REFERENCES Drivers (id)
+		ON DELETE NO ACTION ON UPDATE NO ACTION,
+	departure_point nvarchar(100) NOT NULL,
+	arrival_point nvarchar(100) NOT NULL,
+	departure_time smalldatetime NOT NULL,
+	arrival_time smalldatetime NOT NULL,
+	price numeric(8, 2) NOT NULL CHECK (price > 0),
+	free_places int CHECK (free_places >= 0),
+	CONSTRAINT CHK_Route_time CHECK (arrival_time > departure_time)
+);
+GO
+CREATE NONCLUSTERED INDEX IX_dep_point ON Routes (departure_point);
+GO
+CREATE NONCLUSTERED INDEX IX_arr_point ON Routes (arrival_point);
+GO
+CREATE NONCLUSTERED INDEX IX_dep_time ON Routes (departure_time);
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TABLE Tickets (
+	id int IDENTITY(1, 1) PRIMARY KEY,
+	passenger_id int NOT NULL FOREIGN KEY REFERENCES Passengers (id)
+		ON DELETE NO ACTION ON UPDATE NO ACTION,
+	route_id int NOT NULL FOREIGN KEY REFERENCES Routes (id)
+		ON DELETE NO ACTION ON UPDATE NO ACTION,
+	ticket_number int NOT NULL UNIQUE,
+	place_number int NOT NULL,
+	final_arrival_point nvarchar(100),
+	CONSTRAINT UQ_Place UNIQUE (route_id, place_number),
+	user_id int NOT NULL DEFAULT USER_ID()
+);
+GO
+CREATE NONCLUSTERED INDEX IX_ticket_number ON Tickets (ticket_number);
+GO
+
+
+/* Creation of all necessary procedures */
+
+
+USE PassengerTransportationDB;
+GO
+CREATE PROCEDURE AddBusModel
+	@name nvarchar(100),
+	@seats_number int
+AS
+	INSERT INTO BusModels (name, seats_number)
+	VALUES (@name, @seats_number);
+GO
+CREATE PROCEDURE DeleteBusModel
+	@model_id int
+AS
+	DELETE FROM BusModels WHERE id = @model_id;
+GO
+CREATE PROCEDURE UpdateBusModel
+	@model_id int,
+	@name nvarchar(100),
+	@seats_number int
+AS
+	UPDATE BusModels SET name = @name, seats_number = @seats_number
+	WHERE id = @model_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE PROCEDURE AddBus
+	@model_id int,
+	@bus_number int,
+	@reg_number nvarchar(9)
+AS
+	INSERT INTO Buses (model_id, bus_number, reg_number)
+	VALUES (@model_id, @bus_number, @reg_number);
+GO
+CREATE PROCEDURE DeleteBus
+	@bus_id int
+AS
+	DELETE FROM Buses WHERE id = @bus_id;
+GO
+CREATE PROCEDURE ExploitateBus
+	@bus_id int
+AS
+	UPDATE Buses SET is_in_exploitation = 1 WHERE id = @bus_id;
+GO
+CREATE PROCEDURE UnexploitateBus
+	@bus_id int
+AS
+	UPDATE Buses SET is_in_exploitation = 0 WHERE id = @bus_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE PROCEDURE AddDriver
+	@first_name nvarchar(50),
+	@middle_name nvarchar(50),
+	@last_name nvarchar(50)
+AS
+	INSERT INTO Drivers (first_name, middle_name, last_name)
+	VALUES (@first_name, @middle_name, @last_name);
+GO
+CREATE PROCEDURE DeleteDriver
+	@driver_id int
+AS
+	DELETE FROM Drivers WHERE id = @driver_id;
+GO
+CREATE PROCEDURE HireDriver
+	@driver_id int
+AS
+	UPDATE Drivers SET is_hired = 1 WHERE id = @driver_id;
+GO
+CREATE PROCEDURE DismissDriver
+	@driver_id int
+AS
+	UPDATE Drivers SET is_hired = 0 WHERE id = @driver_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE PROCEDURE AddPassenger
+	@first_name nvarchar(50),
+	@middle_name nvarchar(50),
+	@last_name nvarchar(50),
+	@birth_date date,
+	@passport_number bigint
+AS
+	INSERT INTO Passengers (first_name, middle_name, last_name, birth_date, passport_number)
+	VALUES (@first_name, @middle_name, @last_name, @birth_date, @passport_number);
+GO
+CREATE PROCEDURE DeletePassenger
+	@passenger_id int
+AS
+	DELETE FROM Passengers WHERE id = @passenger_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE PROCEDURE AddRoute
+	@bus_id int,
+	@driver_id int,
+	@departure_point nvarchar(200),
+	@arrival_point nvarchar(200),
+	@departure_time smalldatetime,
+	@arrival_time smalldatetime,
+	@price numeric(8, 2)
+AS
+	INSERT INTO Routes (bus_id, driver_id, departure_point, arrival_point, departure_time, arrival_time, price)
+	VALUES (@bus_id, @driver_id, @departure_point, @arrival_point, @departure_time, @arrival_time, @price);
+GO
+CREATE PROCEDURE UpdateRoute
+	@route_id int,
+	@new_bus_id int,
+	@new_driver_id int,
+	@new_departure_point nvarchar(200),
+	@new_arrival_point nvarchar(200),
+	@new_departure_time smalldatetime,
+	@new_arrival_time smalldatetime,
+	@new_price numeric(8, 2)
+AS
+	UPDATE Routes SET bus_id = @new_bus_id, driver_id = @new_driver_id,
+	departure_point = @new_departure_point, arrival_point = @new_arrival_point,
+	departure_time = @new_departure_time, arrival_time = @new_arrival_time, price =  @new_price;
+GO
+CREATE PROCEDURE DeleteRoute
+	@route_id int
+AS
+	DELETE FROM Routes WHERE id = @route_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE PROCEDURE AddTicket
+	@passenger_id int,
+	@route_id int,
+	@ticket_number int,
+	@place_number int,
+	@final_arrival_point nvarchar(200)
+AS
+	IF @final_arrival_point != ''
+		INSERT INTO Tickets (passenger_id, route_id, ticket_number, place_number, final_arrival_point)
+		VALUES (@passenger_id, @route_id, @ticket_number, @place_number, @final_arrival_point);
+	ELSE
+		INSERT INTO Tickets (passenger_id, route_id, ticket_number, place_number)
+		VALUES (@passenger_id, @route_id, @ticket_number, @place_number);
+GO
+CREATE PROCEDURE DeleteTicket
+	@ticket_id int
+AS
+	DELETE FROM Tickets WHERE id = @ticket_id;
+GO
+
+
+/* Creating functions */
+
+
+USE PassengerTransportationDB;
+GO
+CREATE FUNCTION CheckAge (@birth_date date)
+RETURNS bit
+AS
+BEGIN
+	IF (DATEDIFF(DAY, @birth_date, GETDATE())/365.25 >= 14)
+		RETURN 1;
+	RETURN 0;
+END
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE FUNCTION CheckSeatNumber (@seat_number int, @route_id int)
+RETURNS bit
+AS
+BEGIN
+	DECLARE @result bit;
+	SET @result = 1;
+	DECLARE @seats_number int;
+	SELECT @seats_number = seats_number FROM Routes 
+	JOIN Buses ON bus_id = Buses.id JOIN BusModels ON model_id = BusModels.id
+	WHERE Routes.id = @route_id;
+	IF (@seat_number > @seats_number)
+		RETURN 0;
+	
+	SET @result = ISNULL((SELECT TOP(1) 0 FROM Tickets
+		WHERE place_number = @seat_number) , 1);
+	RETURN @result;
+END
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE FUNCTION FindRoute (@departure_point nvarchar(100),
+						   @arrival_point nvarchar(100),
+						   @departure_date date)
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT id, departure_point, arrival_point, departure_time, arrival_time,
+	price, free_places, driver, bus_number FROM RoutesView
+	WHERE departure_point = @departure_point AND arrival_point = @arrival_point
+	AND CONVERT(date, departure_time) = CONVERT(date, @departure_date)
+);
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE FUNCTION ThisUserTickets ()
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT id, ticket_number, pas_name, passport_number, departure_point,
+	arrival_point, departure_time, arrival_time, price, place_number,
+	bus_number FROM TicketsView WHERE user_id = USER_ID()
+);
+GO
+
+
+/* Creating views */
+
+
+USE PassengerTransportationDB;
+GO
+CREATE VIEW BusModelsView
+AS
+SELECT M.id, M.name, M.seats_number FROM BusModels M;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE VIEW BusesView
+AS
+SELECT B.id, B.bus_number, M.name AS model, B.reg_number, M.seats_number,
+	B.is_in_exploitation FROM Buses B JOIN BusModels M ON B.model_id = M.id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE VIEW DriversView
+AS
+SELECT D.id, CONCAT(D.last_name, ' ', D.first_name, ' ', D.middle_name) AS full_name,
+	D.is_hired FROM Drivers D;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE VIEW PassengersView
+AS
+SELECT P.id, CONCAT(P.last_name, ' ', P.first_name, ' ', P.middle_name) AS full_name,
+	P.birth_date, P.passport_number, COUNT(T.id) AS tickets_quantity, P.user_id
+	FROM dbo.Passengers P LEFT JOIN dbo.Tickets T ON P.id = T.passenger_id
+	GROUP BY P.id, P.last_name, P.first_name, P.middle_name,
+	P.birth_date, P.passport_number, P.user_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE VIEW RoutesView
+AS
+SELECT R.id, R.departure_point, R.arrival_point, R.departure_time,
+	R.arrival_time, R.price, R.free_places, D.last_name AS driver, B.bus_number
+	FROM Routes R JOIN Drivers D ON R.driver_id = D.id
+	JOIN Buses B ON R.bus_id = B.id JOIN BusModels M ON B.model_id = M.id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE VIEW TicketsView
+AS
+SELECT P.user_id, T.id, T.route_id, T.ticket_number,
+	CONCAT(P.last_name, ' ', P.first_name, ' ', P.middle_name) AS pas_name,
+	P.passport_number, R.departure_point, T.final_arrival_point AS arrival_point,
+	R.departure_time, R.arrival_time, R.price, T.place_number, B.bus_number
+	FROM Tickets T JOIN Passengers P ON T.passenger_id = P.id
+	JOIN Routes R ON T.route_id = R.id JOIN Buses B ON R.bus_id = B.id
+	JOIN BusModels M ON B.model_id = M.id;
+GO
+
+
+/* Creating triggers */
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TRIGGER InsertRouteTrigger ON Routes
+AFTER INSERT
+AS
+	DECLARE @route_id int, @seats_number int;
+	SELECT @route_id = id FROM INSERTED;
+	SELECT @seats_number = seats_number FROM INSERTED
+	JOIN Buses ON bus_id = Buses.id JOIN BusModels ON model_id = BusModels.id;
+	UPDATE Routes SET free_places = @seats_number WHERE id = @route_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TRIGGER InsertTicketTrigger ON Tickets
+AFTER INSERT
+AS
+	DECLARE @ticket_id int, @arr_point nvarchar(100), @place_number int, @route_id int;
+	SELECT @arr_point = final_arrival_point,  @place_number = place_number,
+		   @route_id = route_id FROM INSERTED;
+	IF @arr_point = '' OR @arr_point IS NULL
+	BEGIN
+		SELECT @ticket_id = id FROM INSERTED;
+		SELECT @arr_point = arrival_point FROM INSERTED JOIN Routes ON route_id = Routes.id;
+		UPDATE Tickets SET final_arrival_point = @arr_point WHERE id = @ticket_id;
+	END;
+	UPDATE Routes SET free_places = free_places - 1 WHERE id = @route_id;
+GO
+
+
+USE PassengerTransportationDB;
+GO
+CREATE TRIGGER DeleteTicketTrigger ON Tickets
+AFTER DELETE
+AS
+	DECLARE @route_id int;
+	SELECT @route_id = route_id FROM DELETED;
+	UPDATE Routes SET free_places = free_places + 1 WHERE id = @route_id;
+GO
+
+
+/* Creating a CLR function */
+
+
+USE PassengerTransportationDB;
+GO
+CREATE FUNCTION CheckRegNumber(@regNumber nvarchar(100))
+RETURNS bit
+AS
+EXTERNAL NAME CLR_Functions_Library.[CLR_Functions_Library.Functions].CheckRegNumber
+GO
