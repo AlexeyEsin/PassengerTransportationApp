@@ -83,9 +83,19 @@ namespace PassengerTransportationApp
                     }
                     else
                     {
-                        string maxTicketNumberExpression = "SELECT MAX(ticket_number) FROM TicketsView";
-                        var maxTicketNumberCommand = new SqlCommand(maxTicketNumberExpression, connection);
-                        int newTicketNumber = (int)maxTicketNumberCommand.ExecuteScalar() + 1;
+                        int newTicketNumber = 1;
+
+                        string ticketsCountExpression = "SELECT COUNT(*) FROM TicketsView";
+                        var ticketsCountCommand = new SqlCommand(ticketsCountExpression, connection);
+                        int ticketsCount = (int)ticketsCountCommand.ExecuteScalar();
+
+                        if (ticketsCount != 0)
+                        {
+                            string maxTicketNumberExpression = "SELECT MAX(ticket_number) FROM TicketsView";
+                            var maxTicketNumberCommand = new SqlCommand(maxTicketNumberExpression, connection);
+                            var maxTicketNumber = maxTicketNumberCommand.ExecuteScalar();
+                            newTicketNumber = (int)maxTicketNumber + 1;
+                        }
 
                         string addTicketExpression = "AddTicket";
                         var addTicketCommand = new SqlCommand(addTicketExpression, connection);
@@ -162,8 +172,8 @@ namespace PassengerTransportationApp
                         }
                         else
                         {
-                            string addPassengerExpression = $"EXECUTE AddPassenger @first_name = '{firstName}'," +
-                            $"@middle_name = '{middleName}',  @last_name = '{lastName}', @birth_date = '{birthDate}'," +
+                            string addPassengerExpression = $"EXECUTE AddPassenger @first_name = N'{firstName}'," +
+                            $"@middle_name = N'{middleName}',  @last_name = N'{lastName}', @birth_date = '{birthDate}'," +
                             $"@passport_number = {passportNumber}; SELECT @@IDENTITY;";
                             var addPassengerCommand = new SqlCommand(addPassengerExpression, connection);
 

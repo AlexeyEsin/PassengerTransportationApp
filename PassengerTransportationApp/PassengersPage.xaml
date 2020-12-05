@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:PassengerTransportationApp"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="1000"
-      Title="PassengersPage" Background="AliceBlue" Loaded="Page_Loaded">
+      Title="Пассажиры" Background="AliceBlue" Loaded="Page_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,7 +18,7 @@
             <RowDefinition MaxHeight="20"/>
         </Grid.RowDefinitions>
         <DataGrid Name="PassengersGrid" Grid.Row="0" ColumnWidth="*" FontSize="16" SelectionMode="Single"
-                  AutoGenerateColumns="False" AlternatingRowBackground="LightBlue" IsReadOnly="True"
+                  AutoGenerateColumns="False" AlternatingRowBackground="AliceBlue" IsReadOnly="True"
                   CanUserResizeColumns="False" CanUserSortColumns="True" CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding id}" Header="id" Visibility="Hidden"/>

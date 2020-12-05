@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PassengerTransportationApp"
         mc:Ignorable="d"
-        Title="Приложение" MinHeight="500" Height="600" MinWidth="1000" Width="1000" Background="AliceBlue" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+        Title="Автобусные поездки" MinHeight="500" Height="600" MinWidth="1000" Width="1000" Background="AliceBlue" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition MinHeight="20" MaxHeight="35"/>

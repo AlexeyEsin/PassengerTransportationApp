@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:PassengerTransportationApp"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="1000"
-      Title="UserRoutesPage" Background="AliceBlue" Loaded="Page_Loaded">
+      Title="Рейсы" Background="AliceBlue" Loaded="Page_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -30,7 +30,7 @@
             <Button Name="FindRoutes" Content="Найти" FontSize="16" Width="80" HorizontalAlignment="Right" Click="FindRoutes_Click"/>
         </StackPanel>
         <DataGrid Name="RoutesGrid" Grid.Row="3" ColumnWidth="*" FontSize="16" SelectionMode="Single"
-                  AutoGenerateColumns="False" AlternatingRowBackground="LightBlue" IsReadOnly="True"
+                  AutoGenerateColumns="False" AlternatingRowBackground="AliceBlue" IsReadOnly="True"
                   CanUserResizeColumns="False" CanUserSortColumns="True" CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding id}" Header="id" Visibility="Hidden"/>

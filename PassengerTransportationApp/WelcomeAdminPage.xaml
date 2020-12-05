@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:PassengerTransportationApp"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="WelcomeAdminPage" Background="AliceBlue">
+      Title="Добро пожаловать" Background="AliceBlue">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>

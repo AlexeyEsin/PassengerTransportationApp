@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:PassengerTransportationApp"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="LogInPage" Background="AliceBlue">
+      Title="Авторизация" Background="AliceBlue">
 
     <Grid>
         <Grid.RowDefinitions>
