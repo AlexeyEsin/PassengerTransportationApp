@@ -1,7 +1,7 @@
 CREATE DATABASE PassengerTransportationDB;
 GO
 
-/* Создание всех таблиц и индексов к ним */
+/* Database and tables creation */
 
 USE PassengerTransportationDB;
 GO
@@ -100,7 +100,7 @@ CREATE NONCLUSTERED INDEX IX_ticket_number ON Tickets (ticket_number);
 GO
 
 
-/* Создание всех необходимых процедур */
+/* Creation of all necessary procedures */
 
 
 USE PassengerTransportationDB;
@@ -258,7 +258,7 @@ AS
 GO
 
 
-/* Создание функций */
+/* Creating functions */
 
 
 USE PassengerTransportationDB;
@@ -327,7 +327,7 @@ RETURN
 GO
 
 
-/* Создание представлений */
+/* Creating views */
 
 
 USE PassengerTransportationDB;
@@ -393,7 +393,7 @@ SELECT P.user_id, T.id, T.route_id, T.ticket_number,
 GO
 
 
-/* Создание триггеров */
+/* Creating triggers */
 
 
 USE PassengerTransportationDB;
@@ -438,7 +438,7 @@ AS
 GO
 
 
-/* Создание CLR-функции */
+/* Creating a CLR function */
 
 
 USE PassengerTransportationDB;
