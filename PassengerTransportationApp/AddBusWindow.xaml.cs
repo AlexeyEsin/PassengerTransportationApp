@@ -32,20 +32,27 @@ namespace PassengerTransportationApp
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var expression = "SELECT * FROM BusModelsView";
-            var connection = new SqlConnection(connectionString);
-            var command = new SqlCommand(expression, connection);
+            try
+            {
+                var expression = "SELECT * FROM BusModelsView";
+                var connection = new SqlConnection(connectionString);
+                var command = new SqlCommand(expression, connection);
 
-            connection.Open();
-            var adapter = new SqlDataAdapter(command);
-            var dt = new DataTable();
-            adapter.Fill(dt);
-            ModelComboBox.ItemsSource = dt.DefaultView;
-            ModelComboBox.DisplayMemberPath = "name";
-            ModelComboBox.SelectedValuePath = "id";
+                connection.Open();
+                var adapter = new SqlDataAdapter(command);
+                var modelsTable = new DataTable();
+                adapter.Fill(modelsTable);
+                ModelComboBox.ItemsSource = modelsTable.DefaultView;
+                ModelComboBox.DisplayMemberPath = "name";
+                ModelComboBox.SelectedValuePath = "id";
 
-            command.Dispose();
-            connection.Close();
+                command.Dispose();
+                connection.Close();
+            }
+            catch
+            {
+                ErrorLabel.Content = "Произошла ошибка соединения";
+            }
         }
 
         private void AddBtn_Click(object sender, RoutedEventArgs e)

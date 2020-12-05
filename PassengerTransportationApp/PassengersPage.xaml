@@ -26,6 +26,7 @@
                 <DataGridTextColumn Binding="{Binding birth_date, StringFormat=dd.MM.yyyy}" Header="Дата рождения"/>
                 <DataGridTextColumn Binding="{Binding passport_number}" Header="Паспорт"/>
                 <DataGridTextColumn Binding="{Binding tickets_quantity}" Header="Билеты"/>
+                <DataGridTextColumn Binding="{Binding user_id}" Header="Пользователь"/>
             </DataGrid.Columns>
         </DataGrid>
         <Label Name="ErrorLabel" Grid.Row="2" FontSize="16" HorizontalContentAlignment="Center" Foreground="Red" Margin="200,0,200,0"/>

@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PassengerTransportationApp"
         mc:Ignorable="d"
-        Title="BuyTicketWindow" Height="420" Width="490" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Купить билет" Height="470" Width="730" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="30"/>
@@ -31,25 +33,31 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="230"/>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
-        <Label Name="LastNameLabel" Content="Фамилия:" Grid.Row="1" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
-        <Label Name="FirstNameLabel" Content="Имя:" Grid.Row="3" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
-        <Label Name="MiddleNameLabel" Content="Отчество (при наличии):" Grid.Row="5" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
-        <Label Name="PassportLabel" Content="Серия и номер паспорта:" Grid.Row="7" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
-        <Label Name="BirthDateLabel" Content="Дата рождения:" Grid.Row="9" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
-        <Label Name="SeatNumberLabel" Content="Место в автобусе:" Grid.Row="11" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
-        <Label Name="ArrivalPointLabel" Content="Своё место прибытия:" Grid.Row="13" Grid.Column="1" FontSize="16" VerticalContentAlignment="Center"/>
-        <Label Name="ErrorLabel" Grid.Row="15" Grid.Column="1" Grid.ColumnSpan="2" FontSize="16" Foreground="Red" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-        <TextBox Name="LastNameTextBox" Grid.Row="1" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
-        <TextBox Name="FirstNameTextBox" Grid.Row="3" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
-        <TextBox Name="MiddleNameTextBox" Grid.Row="5" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
-        <TextBox Name="PassportTextBox" Grid.Row="7" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center" PreviewTextInput="Passport_PreviewTextInput"/>
-        <DatePicker Name="BirthDatePicker" Grid.Row="9" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
-        <TextBox Name="SeatNumberTextBox" Grid.Row="11" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center" PreviewTextInput="SeatNumber_PreviewTextInput"/>
-        <TextBox Name="ArrivalPointTextBox" Grid.Row="13" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
-        <Button Name="AddButton" MaxWidth="120" Content="Купить билет" Grid.Row="17" Grid.ColumnSpan="4" Click="BuyButton_Click" FontSize="16"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
+            <RadioButton x:Name="ExistingPassengerRadio" Content="Существующий пассажир" Margin="0,5,0,20" FontSize="16" VerticalContentAlignment="Center"/>
+            <RadioButton x:Name="NewPassengerRadio" Content="Новый пассажир" FontSize="16" VerticalContentAlignment="Center"/>
+        </StackPanel>
+        <ComboBox Name="PassengerComboBox" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="LastNameLabel" Content="Фамилия:" Grid.Row="3" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="FirstNameLabel" Content="Имя:" Grid.Row="5" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="MiddleNameLabel" Content="Отчество (при наличии):" Grid.Row="7" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="PassportLabel" Content="Серия и номер паспорта:" Grid.Row="9" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="BirthDateLabel" Content="Дата рождения:" Grid.Row="11" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="SeatNumberLabel" Content="Место в автобусе:" Grid.Row="13" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="ArrivalPointLabel" Content="Своё место прибытия:" Grid.Row="15" Grid.Column="2" FontSize="16" VerticalContentAlignment="Center"/>
+        <Label Name="ErrorLabel" Grid.Row="17" Grid.Column="1" Grid.ColumnSpan="3" FontSize="16" Foreground="Red" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <TextBox Name="LastNameTextBox" Grid.Row="3" Grid.Column="3" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="FirstNameTextBox" Grid.Row="5" Grid.Column="3" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="MiddleNameTextBox" Grid.Row="7" Grid.Column="3" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="PassportTextBox" Grid.Row="9" Grid.Column="3" FontSize="16" VerticalContentAlignment="Center" PreviewTextInput="Passport_PreviewTextInput"/>
+        <DatePicker Name="BirthDatePicker" Grid.Row="11" Grid.Column="3" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Name="SeatNumberTextBox" Grid.Row="13" Grid.Column="3" FontSize="16" VerticalContentAlignment="Center" PreviewTextInput="SeatNumber_PreviewTextInput"/>
+        <TextBox Name="ArrivalPointTextBox" Grid.Row="15" Grid.Column="3" FontSize="16" VerticalContentAlignment="Center"/>
+        <Button Name="AddButton" MaxWidth="120" Content="Купить билет" Grid.Row="19" Grid.ColumnSpan="5" Click="BuyButton_Click" FontSize="16"/>
     </Grid>
 </Window>

@@ -39,7 +39,7 @@ namespace PassengerTransportationApp
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var expression = "SELECT * FROM TicketsView WHERE user_id = USER_ID()";
+            var expression = "SELECT * FROM ThisUserTickets()";
             var connection = new SqlConnection(connectionString);
             adapter = new SqlDataAdapter(expression, connection);
             ticketsTable = new DataTable();

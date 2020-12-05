@@ -25,13 +25,14 @@
                 <DataGridTextColumn Binding="{Binding ticket_number}" Header="Билет" MaxWidth="70"/>
                 <DataGridTextColumn Binding="{Binding pas_name}" Header="Пассажир"/>
                 <DataGridTextColumn Binding="{Binding passport_number}" Header="Паспорт" MaxWidth="120"/>
-                <DataGridTextColumn Binding="{Binding departure_point}" Header="Откуда" MaxWidth="220"/>
-                <DataGridTextColumn Binding="{Binding arrival_point}" Header="Куда" MaxWidth="220"/>
+                <DataGridTextColumn Binding="{Binding departure_point}" Header="Откуда" MaxWidth="200"/>
+                <DataGridTextColumn Binding="{Binding arrival_point}" Header="Куда" MaxWidth="200"/>
                 <DataGridTextColumn Binding="{Binding departure_time, StringFormat=dd.MM.yy HH:mm}" Header="Отправление" MaxWidth="130"/>
                 <DataGridTextColumn Binding="{Binding arrival_time, StringFormat=dd.MM.yy HH:mm}" Header="Прибытие" MaxWidth="130"/>
                 <DataGridTextColumn Binding="{Binding price, StringFormat={}{0} руб.}" Header="Стоимость" MaxWidth="120"/>
                 <DataGridTextColumn Binding="{Binding place_number}" Header="Место" MaxWidth="70"/>
-                <DataGridTextColumn Binding="{Binding bus_number}" Header="Автобус" MaxWidth="120"/>
+                <DataGridTextColumn Binding="{Binding bus_number}" Header="Автобус" MaxWidth="100"/>
+                <DataGridTextColumn Binding="{Binding user_id}" Header="Пользователь" MaxWidth="120"/>
             </DataGrid.Columns>
         </DataGrid>
         <Label Name="ErrorLabel" Grid.Row="2" FontSize="16" HorizontalContentAlignment="Center" Foreground="Red" Margin="200,0,200,0"/>

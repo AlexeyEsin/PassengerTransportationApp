@@ -31,63 +31,58 @@ namespace PassengerTransportationApp
             InitializeComponent();
         }
 
-        private void BuyButton_Click(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ErrorLabel.Content = "";
-
-            string lastName = LastNameTextBox.Text;
-            string firstName = FirstNameTextBox.Text;
-            string middleName = MiddleNameTextBox.Text;
-            string pasportStr = PassportTextBox.Text;
-            string seatNumberStr = SeatNumberTextBox.Text;
-            string arrivalPoint = ArrivalPointTextBox.Text;
-
-            var passportPattern = @"^\d{10}$";
-
-            if (lastName == "" || firstName == "" || pasportStr == "" || seatNumberStr == "" || !BirthDatePicker.SelectedDate.HasValue)
+            try
             {
-                ErrorLabel.Content = "Введите все обязательные данные";
+                var expression = "SELECT * FROM PassengersView WHERE user_id = USER_ID()";
+                var connection = new SqlConnection(connectionString);
+                var command = new SqlCommand(expression, connection);
+
+                connection.Open();
+                var adapter = new SqlDataAdapter(command);
+                var passengersTable = new DataTable();
+                adapter.Fill(passengersTable);
+                PassengerComboBox.ItemsSource = passengersTable.DefaultView;
+                PassengerComboBox.DisplayMemberPath = "full_name";
+                PassengerComboBox.SelectedValuePath = "id";
+
+                command.Dispose();
+                connection.Close();
             }
-            else if (!Regex.IsMatch(pasportStr, passportPattern))
+            catch
             {
-                ErrorLabel.Content = "Неверный формат паспорта";
+                ErrorLabel.Content = "Произошла ошибка соединения";
             }
-            else
-            {
-                string birthDate = BirthDatePicker.SelectedDate.Value.ToString("u").Substring(0, 10);
-                long passportNumber = long.Parse(pasportStr);
-                int seatNumber = int.Parse(seatNumberStr);
+        }
 
-                try
+        private bool AddTicket(int pasId, int routeId, string seatNumberStr, string arrPoint)
+        {
+            bool added = false;
+
+            try
+            {
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
+
+                int seatNumber;
+
+                if (!int.TryParse(seatNumberStr, out seatNumber))
                 {
-                    var checkAgeExpression = "SELECT dbo.CheckAge('" + birthDate + "')";
+                    ErrorLabel.Content = "Некорректный номер места";
+                }
+                else
+                {
                     var checkSeatNumberExpression = "SELECT dbo.CheckSeatNumber(" + seatNumber + ", " + routeId + ")";
-                    var connection = new SqlConnection(connectionString);
-                    var checkAgeCommand = new SqlCommand(checkAgeExpression, connection);
                     var checkSeatNumberCommand = new SqlCommand(checkSeatNumberExpression, connection);
-
-                    connection.Open();
-                    bool isMoreThan14 = (bool)checkAgeCommand.ExecuteScalar();
                     bool isCorrectSeatNumber = (bool)checkSeatNumberCommand.ExecuteScalar();
 
-                    if (!isMoreThan14)
-                    {
-
-                        ErrorLabel.Content = "Пассажиру должно быть 14 или более лет";
-                    }
-                    else if (!isCorrectSeatNumber)
+                    if (!isCorrectSeatNumber)
                     {
                         ErrorLabel.Content = "Это место в автобусе уже занято или его нет";
                     }
                     else
                     {
-                        string addPassengerExpression = $"EXECUTE AddPassenger @first_name = '{firstName}'," +
-                        $"@middle_name = '{middleName}',  @last_name = '{lastName}', @birth_date = '{birthDate}'," +
-                        $"@passport_number = {passportNumber}; SELECT @@IDENTITY;";
-                        var addPassengerCommand = new SqlCommand(addPassengerExpression, connection);
-
-                        int passengerId = Convert.ToInt32(addPassengerCommand.ExecuteScalar());
-
                         string maxTicketNumberExpression = "SELECT MAX(ticket_number) FROM TicketsView";
                         var maxTicketNumberCommand = new SqlCommand(maxTicketNumberExpression, connection);
                         int newTicketNumber = (int)maxTicketNumberCommand.ExecuteScalar() + 1;
@@ -95,23 +90,119 @@ namespace PassengerTransportationApp
                         string addTicketExpression = "AddTicket";
                         var addTicketCommand = new SqlCommand(addTicketExpression, connection);
                         addTicketCommand.CommandType = CommandType.StoredProcedure;
-                        addTicketCommand.Parameters.Add(new SqlParameter("@passenger_id", passengerId));
+                        addTicketCommand.Parameters.Add(new SqlParameter("@passenger_id", pasId));
                         addTicketCommand.Parameters.Add(new SqlParameter("@route_id", routeId));
                         addTicketCommand.Parameters.Add(new SqlParameter("@ticket_number", newTicketNumber));
                         addTicketCommand.Parameters.Add(new SqlParameter("@place_number", seatNumber));
-                        addTicketCommand.Parameters.Add(new SqlParameter("@final_arrival_point", arrivalPoint));
+                        addTicketCommand.Parameters.Add(new SqlParameter("@final_arrival_point", arrPoint));
 
                         addTicketCommand.ExecuteScalar();
                         owner.RefreshGrid();
+                        added = true;
 
                         connection.Close();
-                        this.Close();
                     }
                 }
-                catch
+            }
+            catch
+            {
+                ErrorLabel.Content = "Произошла ошибка соединения";
+            }
+
+            return added;
+        }
+
+        private void BuyButton_Click(object sender, RoutedEventArgs e)
+        {
+            ErrorLabel.Content = "";
+
+            string arrivalPoint = ArrivalPointTextBox.Text;
+            string seatNumberStr = SeatNumberTextBox.Text;
+            int passengerId = 0;
+
+            try
+            {
+                var connection = new SqlConnection(connectionString);
+                connection.Open();
+
+                if (ExistingPassengerRadio.IsChecked == false && NewPassengerRadio.IsChecked == false)
                 {
-                    ErrorLabel.Content = "Произошла ошибка соединения";
+                    ErrorLabel.Content = "Выберите, добавить нового пассажира или существующего";
                 }
+                else if (NewPassengerRadio.IsChecked == true)
+                {
+                    string lastName = LastNameTextBox.Text;
+                    string firstName = FirstNameTextBox.Text;
+                    string middleName = MiddleNameTextBox.Text;
+                    string pasportStr = PassportTextBox.Text;
+
+                    var passportPattern = @"^\d{10}$";
+
+                    if (lastName == "" || firstName == "" || pasportStr == "" || seatNumberStr == "" || !BirthDatePicker.SelectedDate.HasValue)
+                    {
+                        ErrorLabel.Content = "Введите все обязательные данные";
+                    }
+                    else if (!Regex.IsMatch(pasportStr, passportPattern))
+                    {
+                        ErrorLabel.Content = "Неверный формат паспорта";
+                    }
+                    else
+                    {
+                        string birthDate = BirthDatePicker.SelectedDate.Value.ToString("u").Substring(0, 10);
+                        long passportNumber = long.Parse(pasportStr);
+
+                        var checkAgeExpression = "SELECT dbo.CheckAge('" + birthDate + "')";
+                        var checkAgeCommand = new SqlCommand(checkAgeExpression, connection);
+
+                        bool isMoreThan14 = (bool)checkAgeCommand.ExecuteScalar();
+
+                        if (!isMoreThan14)
+                        {
+                            ErrorLabel.Content = "Пассажиру должно быть 14 или более лет";
+                        }
+                        else
+                        {
+                            string addPassengerExpression = $"EXECUTE AddPassenger @first_name = '{firstName}'," +
+                            $"@middle_name = '{middleName}',  @last_name = '{lastName}', @birth_date = '{birthDate}'," +
+                            $"@passport_number = {passportNumber}; SELECT @@IDENTITY;";
+                            var addPassengerCommand = new SqlCommand(addPassengerExpression, connection);
+
+                            try
+                            {
+                                passengerId = Convert.ToInt32(addPassengerCommand.ExecuteScalar());
+
+                                if (AddTicket(passengerId, routeId, seatNumberStr, arrivalPoint))
+                                {
+                                    this.Close();
+                                }
+                            }
+                            catch
+                            {
+                                ErrorLabel.Content = "Вы уже добавляли пассажира с таким номером паспорта";
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (PassengerComboBox.SelectedIndex < 0)
+                    {
+                        ErrorLabel.Content = "Выберите пассажира";
+                    }
+                    else
+                    {
+                        passengerId = (int)PassengerComboBox.SelectedValue;
+
+                        if (AddTicket(passengerId, routeId, seatNumberStr, arrivalPoint))
+                        {
+                            this.Close();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                ErrorLabel.Content = "Произошла ошибка соединения";
             }
         }
 
