@@ -1,7 +1,9 @@
+/* Database and tables creation */
+
+
 CREATE DATABASE PassengerTransportationDB;
 GO
 
-/* Database and tables creation */
 
 USE PassengerTransportationDB;
 GO
