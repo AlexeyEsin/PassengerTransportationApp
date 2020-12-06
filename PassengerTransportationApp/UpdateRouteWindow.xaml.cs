@@ -116,7 +116,11 @@ namespace PassengerTransportationApp
                 DateTime fullDepartureDate = departureDate.AddHours(departureTime.Hour).AddMinutes(departureTime.Minute);
                 DateTime fullArrivalDate = arrivalDate.AddHours(arrivalTime.Hour).AddMinutes(arrivalTime.Minute);
 
-                if (fullArrivalDate <= fullDepartureDate)
+                if (fullDepartureDate <= DateTime.Now)
+                {
+                    ErrorLabel.Content = "Дата отправления уже прошла";
+                }
+                else if (fullArrivalDate <= fullDepartureDate)
                 {
                     ErrorLabel.Content = "Дата прибытия должна быть позже даты отправления";
                 }
