@@ -292,7 +292,7 @@ BEGIN
 		RETURN 0;
 	
 	SET @result = ISNULL((SELECT TOP(1) 0 FROM Tickets
-		WHERE place_number = @seat_number) , 1);
+		WHERE place_number = @seat_number AND route_id = @route_id) , 1);
 	RETURN @result;
 END
 GO
