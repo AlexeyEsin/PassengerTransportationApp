@@ -88,37 +88,44 @@ namespace PassengerTransportationApp
             {
                 departureDate = DepartureDatePicker.SelectedDate.Value;
 
-                try
+                if (departureDate < DateTime.Now)
                 {
-                    string departureDateStr = departureDate.ToString("u").Substring(0, 10);
-                    var countEpression = "SELECT COUNT(*) FROM FindRoute(N'" + departurePoint + "', N'" + arrivalPoint + "', '"
-                                      + departureDateStr + "')";
-                    var expression = "SELECT * FROM FindRoute(N'" + departurePoint + "', N'" + arrivalPoint + "', '"
-                                      + departureDateStr + "')";
-                    var connection = new SqlConnection(connectionString);
-                    var command = new SqlCommand(countEpression, connection);
-
-                    connection.Open();
-
-                    if ((int)command.ExecuteScalar() == 0)
-                    {
-                        ErrorLabel.Content = "Не нашлось рейсов на эту дату";
-                        RoutesGrid.ItemsSource = null;
-                    }
-                    else
-                    {
-                        command.CommandText = expression;
-                        adapter.SelectCommand = command;
-                        RoutesGrid.ItemsSource = routesTable.DefaultView;
-                        RefreshGrid();
-                    }
-
-                    command.Dispose();
-                    connection.Close();
+                    ErrorLabel.Content = "Невозможно найти билеты на прошедшую дату";
                 }
-                catch
+                else
                 {
-                    ErrorLabel.Content = "Произошла ошибка соединения";
+                    try
+                    {
+                        string departureDateStr = departureDate.ToString("u").Substring(0, 10);
+                        var countEpression = "SELECT COUNT(*) FROM FindRoute(N'" + departurePoint + "', N'" + arrivalPoint + "', '"
+                                          + departureDateStr + "')";
+                        var expression = "SELECT * FROM FindRoute(N'" + departurePoint + "', N'" + arrivalPoint + "', '"
+                                          + departureDateStr + "')";
+                        var connection = new SqlConnection(connectionString);
+                        var command = new SqlCommand(countEpression, connection);
+
+                        connection.Open();
+
+                        if ((int)command.ExecuteScalar() == 0)
+                        {
+                            ErrorLabel.Content = "Не нашлось рейсов на эту дату";
+                            RoutesGrid.ItemsSource = null;
+                        }
+                        else
+                        {
+                            command.CommandText = expression;
+                            adapter.SelectCommand = command;
+                            RoutesGrid.ItemsSource = routesTable.DefaultView;
+                            RefreshGrid();
+                        }
+
+                        command.Dispose();
+                        connection.Close();
+                    }
+                    catch
+                    {
+                        ErrorLabel.Content = "Произошла ошибка соединения";
+                    }
                 }
             }
         }
