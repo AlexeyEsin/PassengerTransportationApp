@@ -56,7 +56,7 @@ namespace PassengerTransportationApp
             }
         }
 
-        private bool AddTicket(int pasId, int routeId, string seatNumberStr, string arrPoint)
+        private bool AddTicket(int pasId, int routeId, int seatNumber, string arrPoint)
         {
             bool added = false;
 
@@ -64,54 +64,45 @@ namespace PassengerTransportationApp
             {
                 var connection = new SqlConnection(connectionString);
                 connection.Open();
+                var checkSeatNumberExpression = "SELECT dbo.CheckSeatNumber(" + seatNumber + ", " + routeId + ")";
+                var checkSeatNumberCommand = new SqlCommand(checkSeatNumberExpression, connection);
+                bool isCorrectSeatNumber = (bool)checkSeatNumberCommand.ExecuteScalar();
 
-                int seatNumber;
-
-                if (!int.TryParse(seatNumberStr, out seatNumber))
+                if (!isCorrectSeatNumber)
                 {
-                    ErrorLabel.Content = "Некорректный номер места";
+                    ErrorLabel.Content = "Это место в автобусе уже занято или его нет";
                 }
                 else
                 {
-                    var checkSeatNumberExpression = "SELECT dbo.CheckSeatNumber(" + seatNumber + ", " + routeId + ")";
-                    var checkSeatNumberCommand = new SqlCommand(checkSeatNumberExpression, connection);
-                    bool isCorrectSeatNumber = (bool)checkSeatNumberCommand.ExecuteScalar();
+                    int newTicketNumber = 1;
 
-                    if (!isCorrectSeatNumber)
+                    string ticketsCountExpression = "SELECT COUNT(*) FROM TicketsView";
+                    var ticketsCountCommand = new SqlCommand(ticketsCountExpression, connection);
+                    int ticketsCount = (int)ticketsCountCommand.ExecuteScalar();
+
+                    if (ticketsCount != 0)
                     {
-                        ErrorLabel.Content = "Это место в автобусе уже занято или его нет";
+                        string maxTicketNumberExpression = "SELECT MAX(ticket_number) FROM TicketsView";
+                        var maxTicketNumberCommand = new SqlCommand(maxTicketNumberExpression, connection);
+                        var maxTicketNumber = maxTicketNumberCommand.ExecuteScalar();
+                        newTicketNumber = (int)maxTicketNumber + 1;
                     }
-                    else
-                    {
-                        int newTicketNumber = 1;
 
-                        string ticketsCountExpression = "SELECT COUNT(*) FROM TicketsView";
-                        var ticketsCountCommand = new SqlCommand(ticketsCountExpression, connection);
-                        int ticketsCount = (int)ticketsCountCommand.ExecuteScalar();
+                    string addTicketExpression = "AddTicket";
+                    var addTicketCommand = new SqlCommand(addTicketExpression, connection);
+                    addTicketCommand.CommandType = CommandType.StoredProcedure;
+                    addTicketCommand.Parameters.Add(new SqlParameter("@passenger_id", pasId));
+                    addTicketCommand.Parameters.Add(new SqlParameter("@route_id", routeId));
+                    addTicketCommand.Parameters.Add(new SqlParameter("@ticket_number", newTicketNumber));
+                    addTicketCommand.Parameters.Add(new SqlParameter("@place_number", seatNumber));
+                    addTicketCommand.Parameters.Add(new SqlParameter("@final_arrival_point", arrPoint));
 
-                        if (ticketsCount != 0)
-                        {
-                            string maxTicketNumberExpression = "SELECT MAX(ticket_number) FROM TicketsView";
-                            var maxTicketNumberCommand = new SqlCommand(maxTicketNumberExpression, connection);
-                            var maxTicketNumber = maxTicketNumberCommand.ExecuteScalar();
-                            newTicketNumber = (int)maxTicketNumber + 1;
-                        }
+                    addTicketCommand.ExecuteScalar();
+                    owner.RefreshGrid();
+                    added = true;
 
-                        string addTicketExpression = "AddTicket";
-                        var addTicketCommand = new SqlCommand(addTicketExpression, connection);
-                        addTicketCommand.CommandType = CommandType.StoredProcedure;
-                        addTicketCommand.Parameters.Add(new SqlParameter("@passenger_id", pasId));
-                        addTicketCommand.Parameters.Add(new SqlParameter("@route_id", routeId));
-                        addTicketCommand.Parameters.Add(new SqlParameter("@ticket_number", newTicketNumber));
-                        addTicketCommand.Parameters.Add(new SqlParameter("@place_number", seatNumber));
-                        addTicketCommand.Parameters.Add(new SqlParameter("@final_arrival_point", arrPoint));
+                    connection.Close();
 
-                        addTicketCommand.ExecuteScalar();
-                        owner.RefreshGrid();
-                        added = true;
-
-                        connection.Close();
-                    }
                 }
             }
             catch
@@ -130,89 +121,108 @@ namespace PassengerTransportationApp
             string seatNumberStr = SeatNumberTextBox.Text;
             int passengerId = 0;
 
-            try
+            int seatNumber;
+
+            if (!int.TryParse(seatNumberStr, out seatNumber) || seatNumber <= 0)
             {
-                var connection = new SqlConnection(connectionString);
-                connection.Open();
-
-                if (ExistingPassengerRadio.IsChecked == false && NewPassengerRadio.IsChecked == false)
+                ErrorLabel.Content = "Некорректный номер места";
+            }
+            else
+            {
+                try
                 {
-                    ErrorLabel.Content = "Выберите, добавить нового пассажира или существующего";
-                }
-                else if (NewPassengerRadio.IsChecked == true)
-                {
-                    string lastName = LastNameTextBox.Text;
-                    string firstName = FirstNameTextBox.Text;
-                    string middleName = MiddleNameTextBox.Text;
-                    string pasportStr = PassportTextBox.Text;
+                    var connection = new SqlConnection(connectionString);
+                    connection.Open();
+                    var checkSeatNumberExpression = "SELECT dbo.CheckSeatNumber(" + seatNumber + ", " + routeId + ")";
+                    var checkSeatNumberCommand = new SqlCommand(checkSeatNumberExpression, connection);
+                    bool isCorrectSeatNumber = (bool)checkSeatNumberCommand.ExecuteScalar();
 
-                    var passportPattern = @"^\d{10}$";
-
-                    if (lastName == "" || firstName == "" || pasportStr == "" || seatNumberStr == "" || !BirthDatePicker.SelectedDate.HasValue)
+                    if (!isCorrectSeatNumber)
                     {
-                        ErrorLabel.Content = "Введите все обязательные данные";
-                    }
-                    else if (!Regex.IsMatch(pasportStr, passportPattern))
-                    {
-                        ErrorLabel.Content = "Неверный формат паспорта";
+                        ErrorLabel.Content = "Это место в автобусе уже занято или его нет";
                     }
                     else
                     {
-                        string birthDate = BirthDatePicker.SelectedDate.Value.ToString("u").Substring(0, 10);
-                        long passportNumber = long.Parse(pasportStr);
-
-                        var checkAgeExpression = "SELECT dbo.CheckAge('" + birthDate + "')";
-                        var checkAgeCommand = new SqlCommand(checkAgeExpression, connection);
-
-                        bool isMoreThan14 = (bool)checkAgeCommand.ExecuteScalar();
-
-                        if (!isMoreThan14)
+                        if (ExistingPassengerRadio.IsChecked == false && NewPassengerRadio.IsChecked == false)
                         {
-                            ErrorLabel.Content = "Пассажиру должно быть 14 или более лет";
+                            ErrorLabel.Content = "Выберите, добавить нового пассажира или существующего";
+                        }
+                        else if (NewPassengerRadio.IsChecked == true)
+                        {
+                            string lastName = LastNameTextBox.Text;
+                            string firstName = FirstNameTextBox.Text;
+                            string middleName = MiddleNameTextBox.Text;
+                            string pasportStr = PassportTextBox.Text;
+
+                            var passportPattern = @"^\d{10}$";
+
+                            if (lastName == "" || firstName == "" || pasportStr == "" || seatNumberStr == "" || !BirthDatePicker.SelectedDate.HasValue)
+                            {
+                                ErrorLabel.Content = "Введите все обязательные данные";
+                            }
+                            else if (!Regex.IsMatch(pasportStr, passportPattern))
+                            {
+                                ErrorLabel.Content = "Неверный формат паспорта";
+                            }
+                            else
+                            {
+                                string birthDate = BirthDatePicker.SelectedDate.Value.ToString("u").Substring(0, 10);
+                                long passportNumber = long.Parse(pasportStr);
+
+                                var checkAgeExpression = "SELECT dbo.CheckAge('" + birthDate + "')";
+                                var checkAgeCommand = new SqlCommand(checkAgeExpression, connection);
+
+                                bool isMoreThan14 = (bool)checkAgeCommand.ExecuteScalar();
+
+                                if (!isMoreThan14)
+                                {
+                                    ErrorLabel.Content = "Пассажиру должно быть 14 или более лет";
+                                }
+                                else
+                                {
+                                    string addPassengerExpression = $"EXECUTE AddPassenger @first_name = N'{firstName}'," +
+                                    $"@middle_name = N'{middleName}',  @last_name = N'{lastName}', @birth_date = '{birthDate}'," +
+                                    $"@passport_number = {passportNumber}; SELECT @@IDENTITY;";
+                                    var addPassengerCommand = new SqlCommand(addPassengerExpression, connection);
+
+                                    try
+                                    {
+                                        passengerId = Convert.ToInt32(addPassengerCommand.ExecuteScalar());
+
+                                        if (AddTicket(passengerId, routeId, seatNumber, arrivalPoint))
+                                        {
+                                            this.Close();
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        ErrorLabel.Content = "Вы уже добавляли пассажира с таким номером паспорта";
+                                    }
+                                }
+                            }
                         }
                         else
                         {
-                            string addPassengerExpression = $"EXECUTE AddPassenger @first_name = N'{firstName}'," +
-                            $"@middle_name = N'{middleName}',  @last_name = N'{lastName}', @birth_date = '{birthDate}'," +
-                            $"@passport_number = {passportNumber}; SELECT @@IDENTITY;";
-                            var addPassengerCommand = new SqlCommand(addPassengerExpression, connection);
-
-                            try
+                            if (PassengerComboBox.SelectedIndex < 0)
                             {
-                                passengerId = Convert.ToInt32(addPassengerCommand.ExecuteScalar());
+                                ErrorLabel.Content = "Выберите пассажира";
+                            }
+                            else
+                            {
+                                passengerId = (int)PassengerComboBox.SelectedValue;
 
-                                if (AddTicket(passengerId, routeId, seatNumberStr, arrivalPoint))
+                                if (AddTicket(passengerId, routeId, seatNumber, arrivalPoint))
                                 {
                                     this.Close();
                                 }
                             }
-                            catch
-                            {
-                                ErrorLabel.Content = "Вы уже добавляли пассажира с таким номером паспорта";
-                            }
                         }
                     }
                 }
-                else
+                catch
                 {
-                    if (PassengerComboBox.SelectedIndex < 0)
-                    {
-                        ErrorLabel.Content = "Выберите пассажира";
-                    }
-                    else
-                    {
-                        passengerId = (int)PassengerComboBox.SelectedValue;
-
-                        if (AddTicket(passengerId, routeId, seatNumberStr, arrivalPoint))
-                        {
-                            this.Close();
-                        }
-                    }
+                    ErrorLabel.Content = "Произошла ошибка соединения";
                 }
-            }
-            catch
-            {
-                ErrorLabel.Content = "Произошла ошибка соединения";
             }
         }
 

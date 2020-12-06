@@ -133,13 +133,22 @@ namespace PassengerTransportationApp
             }
             else
             {
-                int routeId = (int)((DataRowView)RoutesGrid.SelectedItem).Row["id"];
+                int freePlaces = (int)((DataRowView)RoutesGrid.SelectedItem).Row["free_places"];
 
-                BuyTicketWindow buyTicketWindow = new BuyTicketWindow();
-                buyTicketWindow.connectionString = connectionString;
-                buyTicketWindow.owner = this;
-                buyTicketWindow.routeId = routeId;
-                buyTicketWindow.ShowDialog();
+                if (freePlaces == 0)
+                {
+                    ErrorLabel.Content = "На этот рейс нет мест";
+                }
+                else
+                {
+                    int routeId = (int)((DataRowView)RoutesGrid.SelectedItem).Row["id"];
+
+                    BuyTicketWindow buyTicketWindow = new BuyTicketWindow();
+                    buyTicketWindow.connectionString = connectionString;
+                    buyTicketWindow.owner = this;
+                    buyTicketWindow.routeId = routeId;
+                    buyTicketWindow.ShowDialog();
+                }
             }
         }
     }
