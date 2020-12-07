@@ -102,7 +102,6 @@ namespace PassengerTransportationApp
                     added = true;
 
                     connection.Close();
-
                 }
             }
             catch

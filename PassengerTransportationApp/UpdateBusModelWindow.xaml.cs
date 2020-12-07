@@ -32,6 +32,12 @@ namespace PassengerTransportationApp
             InitializeComponent();
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            NameTextBox.Text = oldName;
+            SeatsNumberTextBox.Text = oldSeatsNumber.ToString();
+        }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             string modelName = NameTextBox.Text;
@@ -83,5 +89,6 @@ namespace PassengerTransportationApp
         {
             if (!Char.IsDigit(e.Text, 0)) e.Handled = true;
         }
+
     }
 }
