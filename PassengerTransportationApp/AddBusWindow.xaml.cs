@@ -100,15 +100,15 @@ namespace PassengerTransportationApp
                     {
                         command.ExecuteScalar();
                         owner.RefreshGrid();
+
+                        command.Dispose();
+                        connection.Close();
+                        this.Close();
                     }
                     catch
                     {
                         ErrorLabel.Content = "Данный номер автобуса или рег. номер уже занят";
                     }
-
-                    command.Dispose();
-                    connection.Close();
-                    this.Close();
                 }
             }
             catch
